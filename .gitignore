@@ -52,3 +52,5 @@ config/.local_store
 *.session
 config/.settings
 config/.describe
+*.json
+*.org_metadata

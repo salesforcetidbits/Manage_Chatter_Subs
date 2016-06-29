@@ -3,7 +3,7 @@
     <apiVersion>35.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>svgWorkAround</label>
+    <label>SVG_Page</label>
     <packageVersions>
         <majorNumber>1</majorNumber>
         <minorNumber>17</minorNumber>

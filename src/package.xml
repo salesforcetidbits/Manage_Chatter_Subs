@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <types>
-        <members>FollowPanelController</members>
-        <name>ApexClass</name>
-    </types>
-    <types>
-        <members>FollowPanel</members>
-        <members>svgWorkAround</members>
-        <name>ApexPage</name>
-    </types>
-    <types>
-        <members>SLDS104</members>
-        <name>StaticResource</name>
-    </types>
-    <version>35.0</version>
+	<types>
+		<members>SVG_Page_Controller</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>FollowPanel</members>
+		<members>SVG_Page</members>
+		<name>ApexPage</name>
+	</types>
+	<types>
+		<members>SLDS104</members>
+		<name>StaticResource</name>
+	</types>
+	<types>
+		<members>slds_data_table</members>
+		<name>ApexComponent</name>
+	</types>
+	<version>35.0</version>
 </Package>

@@ -11,9 +11,9 @@
               Manage Chatter Subscriptions
           </p>
           <div class="myapp">
-            <apex:include pageName="svgWorkAround"/>
+            <apex:include pageName="SVG_Page"/>
           </div>
-      </div>    
+      </div>
 
   </body>
 

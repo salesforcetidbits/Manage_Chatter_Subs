@@ -1,0 +1,11 @@
+<apex:component >
+
+	<apex:attribute name="input" type="String" required="true" description="a data table"/>
+
+	<!-- jQuery is a dependency-->
+	<script>
+	console.log($(this)[0].attr('name'));
+	</script>
+
+
+</apex:component>

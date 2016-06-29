@@ -1,0 +1,199 @@
+<apex:page controller="SVG_Page_Controller" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" docType="html-5.0">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<head>
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS104, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+	<div class="slds">
+
+		<div class="slds-tabs--default" id="tabcontainer_1">
+
+		  <ul class="slds-tabs--default__nav" role="tablist" id="tabpanel_1"></ul>
+
+		</div>
+	</div>
+
+    <apex:remoteObjects >
+        <apex:remoteObjectModel name="EntitySubscription" jsShorthand="subs" fields="ParentId,SubscriberId,Id"></apex:remoteObjectModel>
+    </apex:remoteObjects>
+
+    <script>
+
+    	var subscriptions = {};
+
+        var index = 0;
+        var isFirst = true;
+        var isSelected = true;
+        var showHide = 'show';
+
+    	var r$ = jQuery.noConflict();
+        var allSubs;
+
+    	r$(document).ready(function(){
+    		initSubs();
+    	});
+
+        function initSubs(){
+
+            // Create a new Remote Object
+            allSubs = new SObjectModel.subs();
+
+            allSubs.retrieve({}, function(err, records, event){
+
+                if(err) {
+                    alert(err);
+                }
+                else {
+
+                    r$.each(records, function(i,v){
+
+                        console.log(v);
+
+                    	var str = v.get('ParentId').substring(0,3);
+
+                    	if(str in subscriptions){
+                    		subscriptions[str].push(v.get('Id'));
+                    	}
+                    	else{
+                    		subscriptions[str] = [];
+                    		subscriptions[str].push(v.get('Id'));
+                    	}
+
+                    });
+
+                    for(var key in subscriptions){
+
+                    	if(!subscriptions.hasOwnProperty(key)){
+                    		continue;
+                    	}
+
+                    	var str = '<li class="slds-tabs--default__item slds-text-heading--label '+checkFirst(isFirst)+'" title="'+key+'" role="presentation"><a class="slds-tabs--default__link" href="#" role="tab" tabindex="'+fetchTabIndex()+'" aria-selected="'+checkSelected(isSelected)+'" aria-controls="tab-default-'+(index+1).toString()+'" id="tab-default-'+(index+1).toString()+'__item">'+key+'</a></li>'
+
+                    	var newLi = r$(str);
+
+                    	r$('#tabpanel_1').append(newLi);
+
+                    	str = '<div id="tab-default-'+(index+1).toString()+'" class="slds-tabs--default__content slds-'+fetchShowHide()+'" role="tabpanel" aria-labelledby="tab-default-'+(index+1).toString()+'__item">'+buildTable(subscriptions[key], key)+'</div>';
+
+                    	newLi = r$(str);
+
+                    	r$('#tabcontainer_1').append(newLi);
+
+                    	index++;
+                    }
+                }
+
+                r$("[role='tab']").on("click",swapActive);
+
+		        index = 0;
+		        isFirst = true;
+		        isSelected = true;
+
+            });
+	    };
+
+        function swapActive(){
+
+            //console.log(allSubs);
+
+            var thisPanel = r$(this)[0];
+            var thisContent = r$('#'+r$(thisPanel).attr('aria-controls'));
+
+            r$.each(r$('.slds-show'), function(i,v){
+                r$(v).removeClass('slds-show');
+                r$(v).addClass('slds-hide');
+            });
+
+            r$.each(r$("[tabindex = '0']"), function(i,v){
+                r$(v).attr('tabindex','-1');
+            });
+
+            r$.each(r$('.slds-active'),function(i,v){
+                r$(v).removeClass('slds-active');
+            });
+
+            r$(thisPanel).parent().addClass('slds-active');
+            r$(thisPanel).attr('tabindex', '0');
+
+            r$(thisContent).addClass('slds-show');
+
+        }
+
+        function checkFirst(b){
+            if(b===true){
+                isFirst = false;
+                return 'slds-active';
+            }
+            return '';
+        }
+
+        function checkSelected(b){
+            if(b===true){
+                isSelected = false;
+                return 'true';
+            }
+            return 'false';
+        }
+
+        function fetchTabIndex(){
+            if(index == 0){
+                return '0';
+            }
+            return '-1';
+        }
+
+        function fetchShowHide(){
+            if(showHide == 'show'){
+                showHide ='hide';
+                return 'show';
+            }
+            return 'hide';
+        }
+
+        function buildTable(str, key){
+            var result = '';
+            r$.each(str.toString().split(','), function(i,v){
+                //console.log(result);
+                result +=
+                '<table class="slds-table slds-table--bordered slds-table--cell-buffer">'+
+                  '<thead>'+
+                    '<tr class="slds-text-heading--label" colspan="2">'+
+                      '<th scope="col" title="'+key+'" colspan="2">'+
+                        '<div class="slds-truncate">'+key+'</div>'+
+                      '</th>'+
+                    '</tr>'+
+                  '</thead>'+
+                  '<tbody>'+
+                    '<tr>'+
+                      '<th scope="row" data-label="'+key+'" title="Cloudhub">'+
+                        '<div class="slds-truncate"><a href="javascript:void(0);">Cloudhub</a></div>'+
+                      '</th>'+
+                      '<td data-label="Account Name" title="Cloudhub">'+
+                        '<div class="slds-truncate">Cloudhub</div>'+
+                      '</td>'+
+                    '</tr>'+
+                    '<tr>'+
+                      '<th scope="row" data-label="'+key+'" title="Cloudhub + Anypoint Connectors">'+
+                        '<div class="slds-truncate"><a href="javascript:void(0);">Cloudhub + Anypoint Connectors</a></div>'+
+                      '</th>'+
+                      '<td data-label="Account Name" title="Cloudhub">'+
+                        '<div class="slds-truncate">Cloudhub</div>'+
+                      '</td>'+
+                    '</tr>'+
+                  '</tbody>'+
+                '</table><br />';
+            });
+
+            //console.log(result);
+
+            return result;
+        }
+    </script>
+</body>
+</html>
+</apex:page>
